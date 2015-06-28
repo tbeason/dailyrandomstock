@@ -12,13 +12,16 @@ shinyUI(navbarPage(
   # Application title
   title="The Breakdown",
   
-  tabPanel("Price Plot",
-    dygraphOutput('dygraphPrice')
+  tabPanel("Summary", icon = icon("info-circle"),
+    h3(textOutput('sum1'))
     ),
-  tabPanel("Volume Plot",
+  tabPanel("Price Plot", icon = icon("line-chart"),
+    dygraphOutput('dygraphPrice')
+  ),
+  tabPanel("Volume Plot", icon = icon("bar-chart"),
     dygraphOutput('dygraphVol')
     ),
-  tabPanel("Wordcloud",
+  tabPanel("Wordcloud", icon = icon("cloud"),
     h3("Still working")     
     )
   

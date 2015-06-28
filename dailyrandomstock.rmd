@@ -29,6 +29,9 @@ shinyAppDir(
 
 
 
+***
+
+*Disclaimer: This is not an endorsement to buy or sell any security shown here. Talk to your financial advisor before investing. Financial data is provided by Quandl.*
 
 
 
