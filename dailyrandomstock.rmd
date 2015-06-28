@@ -1,16 +1,15 @@
 ---
-title: "Daily Random Stock"
+#title: "Daily Random Stock"
 #author: "Tyler Beason"
 #date: "Wednesday, June 24, 2015"
 output: 
   html_document: 
-    theme: null
-    css: 'shinyApp/www/bootstrap.css'
+    theme: cosmo
 runtime: shiny
 ---
 
 
-
+# Daily Random Stock
 
 ***
 
@@ -31,6 +30,7 @@ shinyAppDir(
 
 
 ***
+
 
 *Disclaimer: This is not an endorsement to buy or sell any security shown here. Talk to your financial advisor before investing. Financial data is provided by Quandl.*
 

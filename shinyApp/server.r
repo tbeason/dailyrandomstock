@@ -86,7 +86,11 @@ shinyServer(function(input, output) {
   })
   
   output$sum1 <- renderText({
-    paste("Today's stock is", symbol())
+    paste("Today's stock is", todayStock()[[2]],".")
+  })
+  
+  output$sum2 <- renderText({
+    paste("They are listed under the symbol", symbol(),".")
   })
   
 

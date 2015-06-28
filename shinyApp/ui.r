@@ -13,7 +13,11 @@ shinyUI(navbarPage(theme="bootstrap.css",
   title="The Breakdown",
   
   tabPanel("Summary", icon = icon("info-circle"),
-    h3(textOutput('sum1'))
+    wellPanel(
+      p(textOutput('sum1')),
+      p(textOutput('sum2'))
+      )
+           
     ),
   tabPanel("Price Plot", icon = icon("line-chart"),
     dygraphOutput('dygraphPrice')
