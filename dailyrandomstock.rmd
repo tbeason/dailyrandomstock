@@ -14,7 +14,7 @@ library(PerformanceAnalytics)
 library(stringr)
 ```
 
-```{r,echo=FALSE, cache=TRUE}
+```{r,echo=FALSE}
 checkFun <- function()
   {
     Sys.Date()
