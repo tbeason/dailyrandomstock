@@ -15,15 +15,17 @@ shinyUI(navbarPage(theme="bootstrap.css",
   tabPanel("Summary", icon = icon("info-circle"),
     sidebarLayout(
       sidebarPanel(includeMarkdown("summary.md")),      
-      mainPanel(width=6,
+      mainPanel(
+        wellPanel(
         includeHTML("stockSummary.html")
         )
-      
+      )
       )
            
     ),
   tabPanel("Chart", icon = icon("line-chart"),
     dygraphOutput('dygraphPrice'),
+    br(),
     "Performance of the chart may decrease for large time windows."
   ),
   tabPanel("Performance", icon = icon("flag-checkered"),
