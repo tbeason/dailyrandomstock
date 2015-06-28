@@ -7,75 +7,27 @@ output:
     theme: united
 runtime: shiny
 ---
-```{r load_libraries, echo=FALSE, message=FALSE, warning=FALSE}
-library(dygraphs)
-library(Quandl)
-library(PerformanceAnalytics)
-library(stringr)
-```
 
-```{r,echo=FALSE}
-checkFun <- function()
-  {
-    Sys.Date()
-  }
-valueFun <- function()
-  {
-    set.seed(floor(as.numeric(Sys.Date())))
-    symbolList <- read.csv('WIKI_tickers.csv',stringsAsFactors=FALSE, header=TRUE)
-    rand <- sample(1:nrow(symbolList),1)
-    symbolList[rand,]
-  }
-todayStock <- reactivePoll(300000,NULL, checkFun, valueFun)
 
-quandl_code <- reactive({
-  todayStock()[[1]]
-})
 
-ticker <- reactive({
-  str_sub(quandl_code(),6,-1)
-})
-
-fullName <- reactive({
-  todayStock()[[2]]
-})
-
-stockData <- reactive({
-  Quandl(quandl_code(),type="xts")
-})
-
-closePrices <- reactive({
-  stockData()$'Adj. Close'
-})
-
-lastClose <- reactive({
-  as.numeric(stockData()$'Adj. Close'[end(stockData())])
-})
-
-lastOpen <- reactive({
-  as.numeric(stockData()$'Adj. Open'[end(stockData())])
-})
-
-volume <- reactive({
-  stockData()$'Adj. Volume'
-})
-```
 
 ***
 
-The Daily Random Stock for `r format(Sys.Date(), "%A %B %e, %Y")` is **`r renderText({  paste(fullName(), " : ", ticker())  }) `**
+There are thousands of publicly traded companies in the US. Most investors concentrate their efforts on the well-known stocks - don't be like them! There may be better investment opportunities in companies you have never heard of before. I created Daily Random Stock to showcase 1 of the over 3,000 companies on the biggest US exchanges each day. No media bias here!
 
-Last opening price: **`r renderText({ lastOpen() })`**
-
-Last closing price: **`r renderText({ lastClose() })`**
+***
 
 
-```{r, echo=FALSE}
-renderDygraph({
-  dygraph(closePrices(), main = paste(ticker(),"Price")) %>% 
-  dyRangeSelector(dateWindow = c(start(closePrices()), end(closePrices())))
-})
+```{r,echo=FALSE}
+shinyAppDir(
+  "~/GitHub/dailyrandomstock/shinyApp",
+  options=list(
+    width="100%", height=700
+  )
+)
 ```
+
+
 
 
 

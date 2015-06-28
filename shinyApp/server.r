@@ -14,7 +14,7 @@ stockNameFile <- reactiveFileReader(60000,NULL,'stockNameFile.csv',read.csv,stri
 shinyServer(function(input, output) {
   checkFun1 <- function()
   {
-    stockDataFile()
+    Sys.Date()
   }
   valueFun1 <- function()
   {
@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
   {
     unlist(stockNameFile())
   }
-  todayStock <- reactivePoll(60000,NULL, checkFun2, valueFun2)
+  todayStock <- reactivePoll(60000,NULL, checkFun1, valueFun2)
   
   quandl_code <- reactive({
     todayStock()[[1]]
