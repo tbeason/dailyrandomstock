@@ -7,7 +7,7 @@ library(stringr)
 library(xts)
 
 # Define UI for miles per gallon application
-shinyUI(navbarPage(
+shinyUI(navbarPage(theme="bootstrap.css",
   
   # Application title
   title="The Breakdown",

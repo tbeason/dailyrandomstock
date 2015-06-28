@@ -4,7 +4,8 @@ title: "Daily Random Stock"
 #date: "Wednesday, June 24, 2015"
 output: 
   html_document: 
-    theme: united
+    theme: null
+    css: 'shinyApp/www/bootstrap.css'
 runtime: shiny
 ---
 
