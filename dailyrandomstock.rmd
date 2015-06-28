@@ -13,7 +13,7 @@ runtime: shiny
 
 ***
 
-There are thousands of publicly traded companies in the US. Most investors concentrate their efforts on the well-known stocks - don't be like them! There may be better investment opportunities in companies you have never heard of before. I created Daily Random Stock to showcase 1 of the over 3,000 companies on the biggest US exchanges each day. No media bias here!
+There are thousands of publicly traded companies in the US. Most investors concentrate their efforts on the well-known stocks - don\'t be like them! There may be better investment opportunities in companies you have never heard of before. I created Daily Random Stock to showcase 1 of the over 3,000 companies on the biggest US exchanges each day. No media bias here! It may take a few seconds to load up.
 
 ***
 
@@ -22,7 +22,7 @@ There are thousands of publicly traded companies in the US. Most investors conce
 shinyAppDir(
   "~/GitHub/dailyrandomstock/shinyApp",
   options=list(
-    width="100%", height=700
+    width="100%", height=600
   )
 )
 ```
@@ -33,6 +33,8 @@ shinyAppDir(
 
 
 *Disclaimer: This is not an endorsement to buy or sell any security shown here. Talk to your financial advisor before investing. Financial data is provided by Quandl.*
+
+Created by Tyler Beason. [TBeason.com](http://tbeason.com)
 
 
 
