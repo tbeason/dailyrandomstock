@@ -31,6 +31,9 @@ shinyUI(navbarPage(theme="bootstrap.css",
   tabPanel("Performance", icon = icon("flag-checkered"),
            h3("Still working") 
   ),
+  tabPanel("Data", icon = icon("database"),
+           h3("Still working") 
+  ),
   tabPanel("Wordcloud", icon = icon("cloud"),
     h3("Still working")     
     )

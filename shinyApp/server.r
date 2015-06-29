@@ -19,26 +19,8 @@ shinyServer(function(input, output) {
     rand <- sample(1:nrow(symbolList()),1)
     newStock <- symbolList()[rand,]
     write.csv(newStock,file='stockNameFile.csv',row.names=FALSE)
-    write.csv(Quandl(newStock[[1]]),file='stockDataFile.csv',row.names=FALSE)
+    write.csv(Quandl(newStock[[1]],start_data='2005-01-01'),file='stockDataFile.csv',row.names=FALSE)
   })
-  
-#   observeEvent(as.numeric(Sys.time()),{
-#     library(ReporteRs)
-#     mydoc <- bsdoc(title ='Random Stock of the Day')
-#     mydoc <- addTitle(mydoc,'Random Stock of the Day',level=2)
-#     prop1 <- textProperties(font.size=12)
-#     prop2 <- textProperties(font.size=12,font.weight='bold',color='#1163A5')
-#     text1 <- pot('Today\'s random stock is ',prop1) + pot(fullName(),prop2)
-#     text2 <- pot('They trade under the symbol ',prop1) + pot(symbol(),prop2)
-#     text3 <- pot('Last open: ',prop1) + pot(lastOpen(),prop2)
-#     text4 <- pot('Last close: ',prop1) + pot(lastClose(),prop2)
-#     text5 <- pot('52-week High: ',prop1) + pot(lastClose(),prop2)
-#     text6 <- pot('52-week Low: ',prop1) + pot(lastClose(),prop2)
-#     text7 <- pot('1-month Average Daily Volume: ',prop1) + pot(lastClose(),prop2)
-#     my.pars = set_of_paragraphs( text1,text2,text3,text4,text5,text6,text7 )
-#     mydoc <- addParagraph(mydoc, my.pars)
-#     writeDoc(mydoc, file="stockSummary.html")
-#   })
   
   observeEvent(as.numeric(Sys.time()),{
     fileConn <- file("stockSummary.html")
@@ -47,10 +29,10 @@ shinyServer(function(input, output) {
     text2 <- paste('<p>They trade under the symbol <b>',symbol(),'</b></p>')
     text3 <- paste('<p>Last open: <b>',lastOpen(),'</b></p>')
     text4 <- paste('<p>Last close: <b>',lastClose(),'</b></p>')
-    text5 <- paste('<p>52-week High: <b>',lastClose(),'</b></p>')
-    text6 <- paste('<p>52-week Low: <b>',lastClose(),'</b></p>')
-    text7 <- paste('<p>1-month Average Daily Volume: <b>',lastClose(),'</b></p>')
-    writeLines(c(title,text1,text2,text3,text4,text5,text6,text7 ),fileConn)
+    text5 <- paste('<p>52-week High: <b>',yrHi(),'</b></p>')
+    text6 <- paste('<p>52-week Low: <b>',yrLo(),'</b></p>')
+    text7 <- paste('<p>1-month Average Daily Volume: <b>',avgVol(),'</b></p>')
+    writeLines(c(title,text1,text2,text3,text4,text5,text6,text7),fileConn)
     close(fileConn)
   })
   
@@ -92,7 +74,8 @@ shinyServer(function(input, output) {
   
 
   closePrices <- reactive({
-    stockData()$'Adj..Close'
+    Price<-as.xts(as.numeric(stockData()$'Adj..Close'),order.by=index(stockData()))
+    return(Price)
   })
   
   lastClose <- reactive({
@@ -104,31 +87,45 @@ shinyServer(function(input, output) {
   })
   
   volume <- reactive({
-    stockData()$'Adj..Volume'
+    Volume <-as.xts(as.numeric(stockData()$'Adj..Volume'),order.by=index(stockData()))
+    return(Volume)
   })
+  
+  avgVol <-reactive({
+    vol <- as.numeric(volume())
+    avg<-mean(vol[length(vol)-30:length(vol)])
+    round(avg)
+  })
+  
+  yrHi <- reactive({
+    pri <- as.numeric(closePrices()[length(closePrices())-252:length(closePrices())])
+    m<-max(pri,na.rm=TRUE)
+    round(m,2)
+  })
+  
+  yrLo <- reactive({
+    pri <- as.numeric(closePrices()[length(closePrices())-252:length(closePrices())])
+    m<-min(pri,na.rm=TRUE)
+    round(m,2)
+  })
+  
+  
   
   output$dygraphPrice <- renderDygraph({
     series <- merge(closePrices(),volume())
     series[,2] <- as.numeric(series[,2])/1000000
+    names(series) <-c('Price','Volume')
     dygraph(series, main = paste(symbol(),"Price & Volume History")) %>%
-      dySeries('Adj..Volume',axis='y2') %>%
+      dySeries('Volume',axis='y2') %>%
       dyAxis('y',label="Stock Price (USD)") %>%
       dyAxis('y2',label="Volume (in Millions of shares)") %>%
-      dyOptions(colors = RColorBrewer::brewer.pal(4, "Set2"),labelsKMB=TRUE) %>%
+      dyOptions(colors = RColorBrewer::brewer.pal(4, "Set2")) %>%
       dyHighlight(highlightCircleSize = 5, 
                   highlightSeriesBackgroundAlpha = 0.2,
                   hideOnMouseOut = FALSE) %>%
       dyHighlight(highlightSeriesOpts = list(strokeWidth = 2)) %>%
       dyLegend(width = 400) %>%
       dyRangeSelector(dateWindow = c(start(series), end(series)))
-  })
-  
-  output$sum1 <- renderText({
-    paste("Today's stock is", todayStock()[[2]],".")
-  })
-  
-  output$sum2 <- renderText({
-    paste("They are listed under the symbol", symbol(),".")
   })
   
   
