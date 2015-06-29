@@ -5,6 +5,7 @@ library(Quandl)
 library(PerformanceAnalytics)
 library(stringr)
 library(xts)
+library(DT)
 
 # Define UI for miles per gallon application
 shinyUI(navbarPage(theme="bootstrap.css",

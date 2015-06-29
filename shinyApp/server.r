@@ -5,6 +5,7 @@ library(Quandl)
 library(PerformanceAnalytics)
 library(stringr)
 library(xts)
+library(DT)
 
 symbolList <- reactiveFileReader(86400000,NULL,'https://s3.amazonaws.com/quandl-static-content/Ticker+CSV%27s/WIKI_tickers.csv',read.csv,stringsAsFactors=FALSE,header=TRUE)
 stockDataFile <- reactiveFileReader(1000,NULL,'stockDataFile.csv',read.csv,stringsAsFactors=FALSE,header=TRUE)
@@ -19,7 +20,7 @@ shinyServer(function(input, output) {
     rand <- sample(1:nrow(symbolList()),1)
     newStock <- symbolList()[rand,]
     write.csv(newStock,file='stockNameFile.csv',row.names=FALSE)
-    write.csv(Quandl(newStock[[1]],start_date='2009-01-01'),file='stockDataFile.csv',row.names=FALSE)
+    write.csv(Quandl(newStock[[1]],authcode="NFwNwciNUYryUG3r2FRr",start_date='2009-01-01'),file='stockDataFile.csv',row.names=FALSE)
   })
   
   observeEvent(as.numeric(Sys.time()),{
@@ -98,13 +99,13 @@ shinyServer(function(input, output) {
   })
   
   yrHi <- reactive({
-    pri <- as.numeric(closePrices()[length(closePrices())-252:length(closePrices())])
+    pri <- as.numeric(closePrices()[(length(closePrices())-252):length(closePrices())])
     m<-max(pri,na.rm=TRUE)
     round(m,2)
   })
   
   yrLo <- reactive({
-    pri <- as.numeric(closePrices()[length(closePrices())-252:length(closePrices())])
+    pri <- as.numeric(closePrices()[(length(closePrices())-252):length(closePrices())])
     m<-min(pri,na.rm=TRUE)
     round(m,2)
   })
@@ -148,9 +149,11 @@ shinyServer(function(input, output) {
       dyRangeSelector(dateWindow = c(start(growth.xts), end(growth.xts)))
   })
   
-  output$dataTable <- renderDataTable(
-    merge(index(stockData()),as.numeric(stockData()[,9:13])),
-    options=list(searching=FALSE)
+  output$dataTable <- DT::renderDataTable(
+    datatable(as.xts(apply(stockData()[,9:13],2,as.numeric),order.by=index(stockData()$Date)),
+      rownames=as.character(index(stockData()[,1])),
+      options=list(searching=FALSE)
+    )
   )
   
   output$downloadData <- downloadHandler(
