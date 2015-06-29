@@ -19,7 +19,7 @@ shinyServer(function(input, output) {
     rand <- sample(1:nrow(symbolList()),1)
     newStock <- symbolList()[rand,]
     write.csv(newStock,file='stockNameFile.csv',row.names=FALSE)
-    write.csv(Quandl(newStock[[1]],start_data='2005-01-01'),file='stockDataFile.csv',row.names=FALSE)
+    write.csv(Quandl(newStock[[1]],start_date='2009-01-01'),file='stockDataFile.csv',row.names=FALSE)
   })
   
   observeEvent(as.numeric(Sys.time()),{
@@ -128,8 +128,39 @@ shinyServer(function(input, output) {
       dyRangeSelector(dateWindow = c(start(series), end(series)))
   })
   
+  output$dygraphPerf <- renderDygraph({
+    SP <- Quandl("SPDJ/SPX", authcode="NFwNwciNUYryUG3r2FRr", trim_start="2009-01-01")
+    SP.xts <- as.xts(SP,order.by=as.Date(SP[,1]))
+    
+    series <- na.omit(merge(closePrices(),SP.xts[,2],SP.xts[,3]))
+    names(series) <- c(symbol(),'SP500TR','SP500')
+    returns <- na.omit(apply(series,2,Return.calculate))
+    growth <- 10000*apply(returns+1,2,cumprod)
+    growth.xts <- as.xts(growth,order.by=index(series[2:nrow(series),])) 
+    dygraph(growth.xts, main = "Growth of $10,000") %>%
+      dyAxis('y',label="Value of Investment (USD)") %>%
+      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set2")) %>%
+      dyHighlight(highlightCircleSize = 5, 
+                  highlightSeriesBackgroundAlpha = 0.2,
+                  hideOnMouseOut = FALSE) %>%
+      dyHighlight(highlightSeriesOpts = list(strokeWidth = 2)) %>%
+      dyLegend(width = 400) %>%
+      dyRangeSelector(dateWindow = c(start(growth.xts), end(growth.xts)))
+  })
   
+  output$dataTable <- renderDataTable(
+    merge(index(stockData()),as.numeric(stockData()[,9:13])),
+    options=list(searching=FALSE)
+  )
   
+  output$downloadData <- downloadHandler(
+    filename = function() { 
+      paste('dailyrandomstock-',symbol(),'.csv',sep="") 
+    },
+    content = function(file) {
+      write.csv(stockData(), file)
+    }
+  )
 
 
   

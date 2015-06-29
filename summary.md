@@ -13,4 +13,4 @@ This is a summary of the current random stock of the day, including:
 
 ### Don't Stop Here
 
-Explore the **Chart**, **Performance**, and **Wordcloud** tabs to learn more about today's random stock.
+Explore the **Chart**, **Performance**, **Data**, and **Wordcloud** tabs to learn more about today's random stock.

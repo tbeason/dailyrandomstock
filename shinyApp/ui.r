@@ -29,10 +29,12 @@ shinyUI(navbarPage(theme="bootstrap.css",
     "Performance of the chart may decrease for large time windows."
   ),
   tabPanel("Performance", icon = icon("flag-checkered"),
-           h3("Still working") 
-  ),
+           dygraphOutput('dygraphPerf'),
+           br(),
+           "Performance of the chart may decrease for large time windows."  ),
   tabPanel("Data", icon = icon("database"),
-           h3("Still working") 
+    downloadButton('downloadData','Download Table Data (CSV)'),
+    dataTableOutput('dataTable')
   ),
   tabPanel("Wordcloud", icon = icon("cloud"),
     h3("Still working")     
