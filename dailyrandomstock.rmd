@@ -1,10 +1,7 @@
 ---
-#title: "Daily Random Stock"
-#author: "Tyler Beason"
-#date: "Wednesday, June 24, 2015"
-output: 
-  html_document: 
-    theme: cosmo
+output:
+  html_document:
+    css: shinyApp/www/bootstrap.css
 runtime: shiny
 ---
 

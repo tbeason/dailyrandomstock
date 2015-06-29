@@ -161,7 +161,7 @@ shinyServer(function(input, output) {
       paste('dailyrandomstock-',symbol(),'.csv',sep="") 
     },
     content = function(file) {
-      write.csv(stockData(), file)
+      write.csv(stockData(), file,row.names=FALSE)
     }
   )
 
