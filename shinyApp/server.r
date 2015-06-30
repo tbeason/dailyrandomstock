@@ -170,7 +170,7 @@ shinyServer(function(input, output) {
     library("wordcloud")
     library("tm")
     
-    auths<-read.csv('auths.csv',stringsAsFactors=FALSE,header=TRUE)[,1]
+    auths<-read.csv('auths.csv',stringsAsFactors=FALSE,header=FALSE)[,1]
     consumer_key <- auths[1]
     consumer_secret <- auths[2]
     access_token <- auths[3]
