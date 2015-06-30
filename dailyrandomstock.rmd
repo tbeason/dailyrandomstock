@@ -29,7 +29,7 @@ shinyAppDir(
 ***
 
 
-*Disclaimer: This is not an endorsement to buy or sell any security shown here. Talk to your financial advisor before investing. Financial data is provided by Quandl.*
+*Disclaimer: This is not an endorsement to buy or sell any security shown here. Talk to your financial advisor before investing. Financial data is provided by Quandl. All data reflects End of Day prices.*
 
 Created by Tyler Beason. [TBeason.com](http://tbeason.com)
 
