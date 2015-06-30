@@ -23,7 +23,7 @@ shinyServer(function(input, output) {
     write.csv(Quandl(newStock[[1]],authcode="NFwNwciNUYryUG3r2FRr",start_date='2009-01-01'),file='stockDataFile.csv',row.names=FALSE)
   })
   
-  observeEvent(as.numeric(Sys.time()),{
+  observe({
     fileConn <- file("stockSummary.html")
     title <- '<h2>Random Stock of the Day</h2>'
     text1 <- paste('<p>Today\'s random stock is <b>',fullName(),'</b></p>')
@@ -120,7 +120,7 @@ shinyServer(function(input, output) {
       dySeries('Volume',axis='y2') %>%
       dyAxis('y',label="Stock Price (USD)") %>%
       dyAxis('y2',label="Volume (in Millions of shares)") %>%
-      dyOptions(colors = RColorBrewer::brewer.pal(4, "Set2")) %>%
+      dyOptions(colors = RColorBrewer::brewer.pal(4, "Dark2")) %>%
       dyHighlight(highlightCircleSize = 5, 
                   highlightSeriesBackgroundAlpha = 0.2,
                   hideOnMouseOut = FALSE) %>%
@@ -140,7 +140,7 @@ shinyServer(function(input, output) {
     growth.xts <- as.xts(growth,order.by=index(series[2:nrow(series),])) 
     dygraph(growth.xts, main = "Growth of $10,000") %>%
       dyAxis('y',label="Value of Investment (USD)") %>%
-      dyOptions(colors = RColorBrewer::brewer.pal(3, "Set2")) %>%
+      dyOptions(colors = RColorBrewer::brewer.pal(3, "Dark2")) %>%
       dyHighlight(highlightCircleSize = 5, 
                   highlightSeriesBackgroundAlpha = 0.2,
                   hideOnMouseOut = FALSE) %>%
@@ -164,16 +164,41 @@ shinyServer(function(input, output) {
       write.csv(stockData(), file,row.names=FALSE)
     }
   )
+  
+  output$wordCloud <- renderPlot({
+    library("twitteR")
+    library("wordcloud")
+    library("tm")
+    
+    auths<-read.csv('auths.csv',stringsAsFactors=FALSE,header=TRUE)[,1]
+    consumer_key <- auths[1]
+    consumer_secret <- auths[2]
+    access_token <- auths[3]
+    access_secret <- auths[4]
+    
+    setup_twitter_oauth(consumer_key, consumer_secret, access_token, access_secret)
+    
+    searchString <- paste('#',symbol(),'+$',symbol(),sep='')
+    tweets <- searchTwitter(searchString, n=1200)
+    
+    #save text
+    tweet_text <- sapply(tweets, function(x) x$getText())
+    
+    removeHTTP <- function(x) gsub("(f|ht)(tp)(s?)(://)(.*)[.|/](.*)", "", x)
+    tweet_text <- sapply(tweet_text, removeHTTP)
+    
+    
+    #create corpus
+    tweet_text_corpus <- Corpus(VectorSource(tweet_text))
+    
+    #clean up
+    tweet_text_corpus <- tm_map(tweet_text_corpus, content_transformer(tolower)) 
+    tweet_text_corpus <- tm_map(tweet_text_corpus, removePunctuation)
+    tweet_text_corpus <- tm_map(tweet_text_corpus, function(x)removeWords(x,stopwords()))
+    
+    wordcloud(tweet_text_corpus,min.freq=3,scale=c(5,1),colors=RColorBrewer::brewer.pal(6, "Dark2"))
+  })
 
 
   
 })
-
-
-
-
-
-
-#   stockData <- reactive({
-#     Quandl(quandl_code(),type="xts")
-#   })

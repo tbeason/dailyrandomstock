@@ -23,7 +23,7 @@ shinyUI(navbarPage(theme="bootstrap.css",
       )
       )
            
-    ),
+  ),
   tabPanel("Chart", icon = icon("line-chart"),
     dygraphOutput('dygraphPrice'),
     br(),
@@ -32,14 +32,20 @@ shinyUI(navbarPage(theme="bootstrap.css",
   tabPanel("Performance", icon = icon("flag-checkered"),
            dygraphOutput('dygraphPerf'),
            br(),
-           "Performance of the chart may decrease for large time windows."  ),
+           "Performance of the chart may decrease for large time windows."  
+  ),
   tabPanel("Data", icon = icon("database"),
     downloadButton('downloadData','Download Table Data (CSV)'),
     dataTableOutput('dataTable')
   ),
   tabPanel("Wordcloud", icon = icon("cloud"),
-    h3("Still working")     
-    )
+     sidebarLayout(
+       sidebarPanel(includeMarkdown("words.md")),      
+       mainPanel(
+         plotOutput('wordCloud')
+       )
+     )     
+  )
   
 
 ))
