@@ -181,22 +181,25 @@ shinyServer(function(input, output) {
     searchString <- paste('#',symbol(),'+$',symbol(),sep='')
     tweets <- searchTwitter(searchString, n=1200)
     
-    #save text
-    tweet_text <- sapply(tweets, function(x) x$getText())
+    if(length(tweets)!=0){
+      #save text
+      tweet_text <- sapply(tweets, function(x) x$getText())
+      
+      removeHTTP <- function(x) gsub("(f|ht)(tp)(s?)(://)(.*)[.|/](.*)", "", x)
+      tweet_text <- sapply(tweet_text, removeHTTP)
+      
+      
+      #create corpus
+      tweet_text_corpus <- Corpus(VectorSource(tweet_text))
+      
+      #clean up
+      tweet_text_corpus <- tm_map(tweet_text_corpus, content_transformer(tolower)) 
+      tweet_text_corpus <- tm_map(tweet_text_corpus, removePunctuation)
+      tweet_text_corpus <- tm_map(tweet_text_corpus, function(x)removeWords(x,stopwords()))
+      
+      wordcloud(tweet_text_corpus,min.freq=3,scale=c(5,1),colors=RColorBrewer::brewer.pal(6, "Dark2"))
+    }
     
-    removeHTTP <- function(x) gsub("(f|ht)(tp)(s?)(://)(.*)[.|/](.*)", "", x)
-    tweet_text <- sapply(tweet_text, removeHTTP)
-    
-    
-    #create corpus
-    tweet_text_corpus <- Corpus(VectorSource(tweet_text))
-    
-    #clean up
-    tweet_text_corpus <- tm_map(tweet_text_corpus, content_transformer(tolower)) 
-    tweet_text_corpus <- tm_map(tweet_text_corpus, removePunctuation)
-    tweet_text_corpus <- tm_map(tweet_text_corpus, function(x)removeWords(x,stopwords()))
-    
-    wordcloud(tweet_text_corpus,min.freq=3,scale=c(5,1),colors=RColorBrewer::brewer.pal(6, "Dark2"))
   })
 
 
