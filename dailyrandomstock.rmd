@@ -16,8 +16,9 @@ There are thousands of publicly traded companies in the US. Most investors conce
 
 
 ```{r,echo=FALSE}
+
 shinyAppDir(
-  "~/GitHub/dailyrandomstock/shinyApp",
+  "shinyApp",
   options=list(
     width="100%", height=600
   )
